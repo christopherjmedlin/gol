@@ -56,6 +56,16 @@ void interpret_input_insert(int in, CellBoard* gol, UIState* state) {
     }
 }
 
+void print_help() {
+    erase();
+    mvprintw(LINES/2-2, COLS/2-10, "Press p to play/pause.");
+    mvprintw(LINES/2-1, COLS/2-15, "Press i to toggle insert mode.");
+    mvprintw(LINES/2, COLS/2-17, "Press enter to advance a generation.");
+    mvprintw(LINES/2+1, COLS/2-16, "Press w to save the current state.");
+    mvprintw(LINES/2+2, COLS/2-17, "Press any key to close this message.");
+    getch();
+}
+
 void interpret_input(int in, CellBoard* gol, UIState* state) {
     char filename[50];
 
@@ -97,6 +107,9 @@ void interpret_input(int in, CellBoard* gol, UIState* state) {
             clrtobot();
             mvprintw(LINES-1, 0, "State saved as %s.", filename);
             break;
+        case 'h':
+            print_help();
+            break;
         case '\n':
             next_generation(gol);
             break;
@@ -106,8 +119,6 @@ void interpret_input(int in, CellBoard* gol, UIState* state) {
 void run(char* filename) {
     int input;
     CellBoard* gol;
-    // minus 2 is for the text at the bottom
-    // division by 2 is because each cell takes 2 columns
     
     if (filename == NULL) {
         gol = load_state(DEFAULT_FILE, COLS/2, LINES-2);
@@ -123,15 +134,15 @@ void run(char* filename) {
     state->cursory = LINES/2;
 
     while (true) {
-        refresh();
         draw_cells(gol);
+        refresh();
         input = getch();
-        clear();
         if (input == 'q') {
             break;
         }
         interpret_input(input, gol, state);
 
+        erase();
         // draw cursor
         if (state->insert) {
             attron(COLOR_PAIR(WHITE));
