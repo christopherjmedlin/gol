@@ -30,7 +30,7 @@ void draw_cells(CellBoard* cells) {
 
 void interpret_input_insert(int in, CellBoard* gol, UIState* state) {
     switch (in) {
-        // escape
+        // exit insert
         case 'i':
             state->insert = false;
             break;
@@ -57,12 +57,14 @@ void interpret_input_insert(int in, CellBoard* gol, UIState* state) {
 }
 
 void interpret_input(int in, CellBoard* gol, UIState* state) {
+    char filename[50];
+
     if (state->insert) {
         interpret_input_insert(in, gol, state);
         return;
     }
-    if (state->playing) {
-        // the only operation permitted while playing is to pause
+    else if (state->playing) {
+        // the only operation permitted while playing is to pause (and quit)
         if (in == 27 || in == 'p') {
             // turn off half delay
             cbreak();
@@ -82,17 +84,36 @@ void interpret_input(int in, CellBoard* gol, UIState* state) {
             halfdelay(1);
             state->playing = true;
             break;
+        case 'w':
+            echo();
+            mvprintw(LINES-1, 0, 
+                     "File name (relative to working directory): ");
+            getstr(filename);
+            noecho();
+            
+            save_state(gol, filename);
+            // clear the bottom line
+            move(LINES-1, 0);
+            clrtobot();
+            mvprintw(LINES-1, 0, "State saved as %s.", filename);
+            break;
         case '\n':
             next_generation(gol);
             break;
     }
 }
 
-void run() {
+void run(char* filename) {
     int input;
+    CellBoard* gol;
     // minus 2 is for the text at the bottom
     // division by 2 is because each cell takes 2 columns
-    CellBoard* gol = init_board(COLS/2, LINES-2);
+    
+    if (filename == NULL) {
+        gol = load_state(DEFAULT_FILE, COLS/2, LINES-2);
+    } else {
+        gol = load_state(filename, COLS/2, LINES-2);
+    }
     
     UIState* state = malloc(sizeof(UIState));
     state->insert = false;

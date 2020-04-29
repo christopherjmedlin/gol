@@ -21,6 +21,10 @@ void toggle_cell(CellBoard* board, int x, int y);
 // Processes the next stage
 void next_generation(CellBoard* board);
 
+// file i/o
+void save_state(CellBoard* board, char* filename);
+CellBoard* load_state(char* filename, int size_x, int size_y);
+
 // frees from memory
 void free_board(CellBoard* board);
 

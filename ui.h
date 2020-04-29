@@ -7,6 +7,8 @@
 #define RED 1
 #define WHITE 2
 
+#define DEFAULT_FILE "rip.gol"
+
 typedef struct {
     bool insert;
     bool playing;

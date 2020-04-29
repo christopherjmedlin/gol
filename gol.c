@@ -94,6 +94,28 @@ void next_generation(CellBoard* board) {
            sizeof(bool)*board->size_x*board->size_y);
 }
 
+void save_state(CellBoard* board, char* filename) {
+    FILE* out = fopen(filename, "w");
+    for (int x = 0; x < board->size_x; x++) {
+        for (int y = 0; y < board->size_y; y++) {
+            if (get_cell(board, x, y)) {
+                fprintf(out, "%d,%d\n", x, y);
+            }
+        }
+    }
+}
+
+CellBoard* load_state(char* filename, int size_x, int size_y) {
+    int x, y;
+    FILE* in = fopen(filename, "r");
+    CellBoard* cells = init_board(size_x, size_y);
+
+    while (fscanf(in, "%d,%d", &x, &y) != EOF) {
+        set_cell(cells, x, y, true);
+    }
+    return cells;
+}
+
 void free_board(CellBoard* board) {
     free(board->cells);
     free(board->next_cells);
