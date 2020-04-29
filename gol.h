@@ -9,6 +9,7 @@ typedef struct {
     int size_y;
     bool* cells;
     bool* next_cells;
+    long generations;
 } CellBoard;
 
 CellBoard* init_board(int size_x, int size_y);

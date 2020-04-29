@@ -11,6 +11,9 @@ gol : $(objects) main.o
 $(objects) tests.o main.o : %.o: %.c
 	$(CC) $(libraries) -c $< -o $@
 
+gol.c : gol.h
+ui.c : ui.h
+
 .PHONY : clean
 clean :
 	-rm gol tests $(objects) main.o tests.o

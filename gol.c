@@ -92,6 +92,7 @@ void next_generation(CellBoard* board) {
     }
     memcpy(board->cells, board->next_cells,
            sizeof(bool)*board->size_x*board->size_y);
+    board->generations++;
 }
 
 void save_state(CellBoard* board, char* filename) {
